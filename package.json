@@ -1,12 +1,9 @@
 {
   "name": "template-ethereum-contracts",
-
   "private": true,
   "engines": {
     "node": ">= 14.0.0"
   },
-  "repository": "github:wighawag/template-ethereum-contracts",
-  "author": "wighawag",
   "license": "MIT",
   "devDependencies": {
     "@atixlabs/hardhat-time-n-mine": "^0.0.5",
