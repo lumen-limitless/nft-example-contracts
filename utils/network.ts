@@ -35,6 +35,7 @@ export function getMnemonic(networkName?: string): string {
     }
   }
 
+
   const mnemonic = process.env.MNEMONIC;
   if (!mnemonic || mnemonic === '') {
     return 'test test test test test test test test test test test junk';
