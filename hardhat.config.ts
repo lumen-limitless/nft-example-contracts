@@ -109,6 +109,9 @@ const config: HardhatUserConfig = {
     project: '',
     username: process.env.TENDERLY_USERNAME as string,
   },
+  etherscan: {
+    apiKey: process.env.SCAN_API_KEY,
+  },
 };
 
 export default config;
