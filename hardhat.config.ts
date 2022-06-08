@@ -1,30 +1,30 @@
-import 'dotenv/config';
-import {HardhatUserConfig} from 'hardhat/types';
-import {task} from 'hardhat/config';
-import 'hardhat-deploy';
-import '@nomiclabs/hardhat-ethers';
-import 'hardhat-gas-reporter';
-import '@typechain/hardhat';
-import 'solidity-coverage';
-import '@atixlabs/hardhat-time-n-mine';
-import '@nomiclabs/hardhat-etherscan';
-import 'hardhat-deploy-tenderly';
-import {node_url, accounts, addForkConfiguration} from './utils/network';
+import 'dotenv/config'
+import { HardhatUserConfig } from 'hardhat/types'
+import { task } from 'hardhat/config'
+import 'hardhat-deploy'
+import '@nomiclabs/hardhat-ethers'
+import 'hardhat-gas-reporter'
+import '@typechain/hardhat'
+import 'solidity-coverage'
+import '@atixlabs/hardhat-time-n-mine'
+import '@nomiclabs/hardhat-etherscan'
+import 'hardhat-deploy-tenderly'
+import { node_url, accounts, addForkConfiguration } from './utils/network'
 
-task('blockNumber', 'Prints the current block number', async (_, {ethers}) => {
+task('blockNumber', 'Prints the current block number', async (_, { ethers }) => {
   await ethers.provider.getBlockNumber().then((blockNumber) => {
-    console.log('Current block number: ' + blockNumber);
-  });
-});
+    console.log('Current block number: ' + blockNumber)
+  })
+})
 
 task('balance', 'Prints an account balance')
   .addParam('account', 'the account address')
-  .setAction(async (args, {ethers}) => {
-    const account = ethers.utils.getAddress(args.account);
-    const balance = await ethers.provider.getBalance(account);
+  .setAction(async (args, { ethers }) => {
+    const account = ethers.utils.getAddress(args.account)
+    const balance = await ethers.provider.getBalance(account)
 
-    console.log(ethers.utils.formatEther(balance), 'ETH');
-  });
+    console.log(ethers.utils.formatEther(balance), 'ETH')
+  })
 
 const config: HardhatUserConfig = {
   solidity: {
@@ -112,6 +112,6 @@ const config: HardhatUserConfig = {
   etherscan: {
     apiKey: process.env.SCAN_API_KEY,
   },
-};
+}
 
-export default config;
+export default config
