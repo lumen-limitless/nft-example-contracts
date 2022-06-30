@@ -52,25 +52,17 @@ const config: HardhatUserConfig = {
       url: node_url('localhost'),
       accounts: accounts(),
     },
-    staging: {
-      url: node_url('rinkeby'),
-      accounts: accounts('rinkeby'),
-    },
-    production: {
-      url: node_url('mainnet'),
-      accounts: accounts('mainnet'),
-    },
     mainnet: {
       url: node_url('mainnet'),
       accounts: accounts('mainnet'),
     },
-    rinkeby: {
-      url: node_url('rinkeby'),
-      accounts: accounts('rinkeby'),
+    arbitrum: {
+      url: node_url('arbitrum'),
+      accounts: accounts('arbitrum'),
     },
-    kovan: {
-      url: node_url('kovan'),
-      accounts: accounts('kovan'),
+    optimism: {
+      url: node_url('optimism'),
+      accounts: accounts('optimism'),
     },
     goerli: {
       url: node_url('goerli'),
@@ -108,9 +100,6 @@ const config: HardhatUserConfig = {
   tenderly: {
     project: '',
     username: process.env.TENDERLY_USERNAME as string,
-  },
-  etherscan: {
-    apiKey: process.env.SCAN_API_KEY,
   },
 }
 
