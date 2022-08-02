@@ -1,21 +1,19 @@
 import 'dotenv/config'
-import { HardhatUserConfig } from 'hardhat/types'
-import { task } from 'hardhat/config'
+import '@nomicfoundation/hardhat-toolbox'
 import 'hardhat-deploy'
-import '@nomiclabs/hardhat-ethers'
-import 'hardhat-gas-reporter'
-import '@typechain/hardhat'
-import 'solidity-coverage'
-import '@atixlabs/hardhat-time-n-mine'
-import '@nomiclabs/hardhat-etherscan'
-import 'hardhat-deploy-tenderly'
+import { task } from 'hardhat/config'
 import { node_url, accounts, addForkConfiguration } from './utils/network'
+import { HardhatUserConfig } from 'hardhat/types'
 
-task('blockNumber', 'Prints the current block number', async (_, { ethers }) => {
-  await ethers.provider.getBlockNumber().then((blockNumber) => {
-    console.log('Current block number: ' + blockNumber)
-  })
-})
+task(
+  'blockNumber',
+  'Prints the current block number',
+  async (_, { ethers }) => {
+    await ethers.provider.getBlockNumber().then((blockNumber) => {
+      console.log('Current block number: ' + blockNumber)
+    })
+  }
+)
 
 task('balance', 'Prints an account balance')
   .addParam('account', 'the account address')
@@ -36,20 +34,26 @@ const config: HardhatUserConfig = {
   solidity: {
     compilers: [
       {
-        version: '0.8.9',
+        version: '0.8.4',
         settings: {
           optimizer: {
             enabled: true,
-            runs: 2000,
+            runs: 200,
           },
         },
       },
     ],
   },
+
   namedAccounts: {
-    deployer: 0,
-    user: 1,
+    deployer: {
+      default: 0,
+    },
+    user: {
+      default: 1,
+    },
   },
+
   networks: addForkConfiguration({
     hardhat: {
       initialBaseFeePerGas: 0, // to fix : https://github.com/sc-forks/solidity-coverage/issues/652, see https://github.com/sc-forks/solidity-coverage/issues/652#issuecomment-896330136
@@ -60,7 +64,8 @@ const config: HardhatUserConfig = {
     },
     mainnet: {
       url: node_url('mainnet'),
-      accounts: accounts('mainnet'),
+      accounts: [process.env.PRIVATE_KEY as string],
+      verify: {},
     },
     arbitrum: {
       url: node_url('arbitrum'),
@@ -72,26 +77,35 @@ const config: HardhatUserConfig = {
     },
     goerli: {
       url: node_url('goerli'),
-      accounts: accounts('goerli'),
+      accounts: [process.env.PRIVATE_KEY as string],
+    },
+    polygon: {
+      url: node_url('polygon'),
+      accounts: accounts('polygon'),
+    },
+    bsc: {
+      url: node_url('bsc'),
+      accounts: accounts('bsc'),
     },
   }),
+
   paths: {
     sources: 'src',
   },
+
   gasReporter: {
     currency: 'USD',
-    gasPrice: 100,
+    gasPrice: 30,
     enabled: process.env.REPORT_GAS ? true : false,
     coinmarketcap: process.env.COINMARKETCAP_API_KEY,
     maxMethodDiff: 10,
   },
+
   typechain: {
     outDir: 'typechain',
     target: 'ethers-v5',
   },
-  mocha: {
-    timeout: 0,
-  },
+
   external: process.env.HARDHAT_FORK
     ? {
         deployments: {
@@ -102,11 +116,6 @@ const config: HardhatUserConfig = {
         },
       }
     : undefined,
-
-  tenderly: {
-    project: '',
-    username: process.env.TENDERLY_USERNAME as string,
-  },
 }
 
 export default config
