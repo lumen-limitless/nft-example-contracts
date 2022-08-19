@@ -34,7 +34,7 @@ const config: HardhatUserConfig = {
   solidity: {
     compilers: [
       {
-        version: '0.8.4',
+        version: '0.8.9',
         settings: {
           optimizer: {
             enabled: true,
@@ -64,8 +64,7 @@ const config: HardhatUserConfig = {
     },
     mainnet: {
       url: node_url('mainnet'),
-      accounts: [process.env.PRIVATE_KEY as string],
-      verify: {},
+      accounts: accounts('mainnet'),
     },
     arbitrum: {
       url: node_url('arbitrum'),
@@ -77,7 +76,7 @@ const config: HardhatUserConfig = {
     },
     goerli: {
       url: node_url('goerli'),
-      accounts: [process.env.PRIVATE_KEY as string],
+      accounts: accounts('goerli'),
     },
     polygon: {
       url: node_url('polygon'),
@@ -86,6 +85,10 @@ const config: HardhatUserConfig = {
     bsc: {
       url: node_url('bsc'),
       accounts: accounts('bsc'),
+    },
+    avalanche: {
+      url: node_url('avalanche'),
+      accounts: accounts('avalanche'),
     },
   }),
 
@@ -104,6 +107,18 @@ const config: HardhatUserConfig = {
   typechain: {
     outDir: 'typechain',
     target: 'ethers-v5',
+  },
+
+  etherscan: {
+    apiKey: {
+      mainnet: process.env.SCAN_API_KEY_MAINNET || '',
+      goerli: process.env.SCAN_API_KEY_GOERLI || '',
+      optimisticEthereum: process.env.SCAN_API_KEY_OPTIMISM || '',
+      arbitrumOne: process.env.SCAN_API_KEY_ARBITRUM || '',
+      polygon: process.env.SCAN_API_KEY_POLYGON || '',
+      bsc: process.env.SCAN_API_KEY_BSC || '',
+      avalanche: process.env.SCAN_API_KEY_AVALANCHE || '',
+    },
   },
 
   external: process.env.HARDHAT_FORK

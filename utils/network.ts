@@ -27,7 +27,9 @@ export function node_url(networkName: string): string {
     return ''
   }
   if (uri.indexOf('{{') >= 0) {
-    throw new Error(`invalid uri or network not supported by node provider : ${uri}`)
+    throw new Error(
+      `invalid uri or network not supported by node provider : ${uri}`
+    )
   }
   return uri
 }
@@ -47,18 +49,23 @@ export function getMnemonic(networkName?: string): string {
   return mnemonic
 }
 
-export function accounts(networkName?: string): HardhatNetworkAccountsUserConfig {
+export function accounts(
+  networkName?: string
+): HardhatNetworkAccountsUserConfig {
   return { mnemonic: getMnemonic(networkName) }
 }
 
-export function addForkConfiguration(networks: NetworksUserConfig): NetworksUserConfig {
+export function addForkConfiguration(
+  networks: NetworksUserConfig
+): NetworksUserConfig {
   // While waiting for hardhat PR: https://github.com/nomiclabs/hardhat/pull/1542
   if (process.env.HARDHAT_FORK) {
     process.env['HARDHAT_DEPLOY_FORK'] = process.env.HARDHAT_FORK
   }
 
   const currentNetworkName = process.env.HARDHAT_FORK
-  let forkURL: string | undefined = currentNetworkName && node_url(currentNetworkName)
+  let forkURL: string | undefined =
+    currentNetworkName && node_url(currentNetworkName)
   let hardhatAccounts: HDAccountsUserConfig | undefined
   if (currentNetworkName && currentNetworkName !== 'hardhat') {
     const currentNetwork = networks[currentNetworkName] as HttpNetworkUserConfig
@@ -91,10 +98,9 @@ export function addForkConfiguration(networks: NetworksUserConfig): NetworksUser
         mining: process.env.MINING_INTERVAL
           ? {
               auto: false,
-              interval: process.env.MINING_INTERVAL.split(',').map((v) => parseInt(v)) as [
-                number,
-                number
-              ],
+              interval: process.env.MINING_INTERVAL.split(',').map((v) =>
+                parseInt(v)
+              ) as [number, number],
             }
           : undefined,
       },
