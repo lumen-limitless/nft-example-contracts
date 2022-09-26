@@ -93,7 +93,7 @@ const config: HardhatUserConfig = {
   }),
 
   paths: {
-    sources: 'src',
+    sources: 'contracts',
   },
 
   gasReporter: {
