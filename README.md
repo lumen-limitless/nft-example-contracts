@@ -18,7 +18,7 @@ Some of them relies on [./\_scripts.js](./_scripts.js) to allow parameterizing i
 As a standard lifecycle npm script, it is executed automatically upon install. It generate config file and typechain to get you started with type safe contract interactions
 <br/><br/>
 
-### `yarn lint`, `yarn lint:fix`, `yarn format` and `yarn format:fix`
+### `yarn format` and `yarn format:fix`
 
 These will lint and format check your code. the `:fix` version will modifiy the files to match the requirement specified in `.eslintrc` and `.prettierrc.`
 <br/><br/>
