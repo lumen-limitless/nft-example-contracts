@@ -10,7 +10,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   await deploy('', {
     from: deployer,
     args: [],
-    skipIfAlreadyDeployed: true,
+    skipIfAlreadyDeployed: false,
     proxy: false,
     log: true,
     autoMine: true, // speed up deployment on local network (ganache, hardhat), no effect on live networks
