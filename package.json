@@ -59,7 +59,7 @@
     "verify": "node ./_scripts.js verify",
     "export": "node ./_scripts.js export",
     "hardhat": "hardhat",
-    "keygen": "hardhat keygen",
+    "walletgen": "hardhat walletgen",
     "fork:execute": "node ./_scripts.js fork:run",
     "fork:deploy": "node ./_scripts.js fork:deploy",
     "fork:dev": "node ./_scripts.js fork:dev",

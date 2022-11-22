@@ -24,11 +24,12 @@ task('balance', 'Prints an account balance')
     console.log(ethers.utils.formatEther(balance), 'ETH')
   })
 
-task('keygen', 'Prints a new private key', async (_, { ethers }) => {
-  const wallet = ethers.Wallet.createRandom()
-  console.log(`Public address: ${wallet.address}`)
-  console.log(`Private key: ${wallet.privateKey}`)
-})
+  task('walletgen', 'Prints a new wallet', async (_, { ethers }) => {
+    const wallet = ethers.Wallet.createRandom()
+    console.log(`Public Address[0]: ${wallet.address}`)
+    console.log(`Mnemonic: ${wallet.mnemonic.phrase}`)
+    console.log(`Private Key[0]: ${wallet.privateKey}`)
+  })
 
 const config: HardhatUserConfig = {
   solidity: {
