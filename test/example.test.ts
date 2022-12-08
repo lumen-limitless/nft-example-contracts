@@ -2,7 +2,7 @@ import { expect } from 'chai'
 import { deployments, ethers } from 'hardhat'
 
 const setup = deployments.createFixture(async () => {
-  await deployments.fixture([''])
+  await deployments.fixture()
   const deployer = await ethers.getNamedSigner('deployer')
   const users = await ethers.getUnnamedSigners()
   const example = await ethers.getContract('CONTRACT')
@@ -16,7 +16,6 @@ const setup = deployments.createFixture(async () => {
 
 describe('SETUP', function () {
   it('Sets up', async function () {
-    const setupTest = await setup()
-    expect(setupTest).to.be.ok
+  expect( await setup()).to.be.ok
   })
 })
