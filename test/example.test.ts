@@ -5,7 +5,7 @@ const setup = deployments.createFixture(async () => {
   await deployments.fixture()
   const deployer = await ethers.getNamedSigner('deployer')
   const users = await ethers.getUnnamedSigners()
-  const example = await ethers.getContract('CONTRACT')
+  const example = await ethers.getContract('NFT')
 
   return {
     example,
@@ -16,6 +16,6 @@ const setup = deployments.createFixture(async () => {
 
 describe('SETUP', function () {
   it('Sets up', async function () {
-  expect( await setup()).to.be.ok
+    expect(await setup()).to.be.ok
   })
 })
