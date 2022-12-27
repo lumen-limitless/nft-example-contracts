@@ -4,11 +4,7 @@ pragma solidity 0.8.17;
 import "erc721a/contracts/ERC721A.sol";
 import "erc721a/contracts/extensions/ERC721AQueryable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/security/Pausable.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
-import "@openzeppelin/contracts/utils/cryptography/SignatureChecker.sol";
-import "@openzeppelin/contracts/token/common/ERC2981.sol";
-import "@openzeppelin/contracts/utils/cryptography/draft-EIP712.sol";
 
 contract NFT is ERC721A, ERC721AQueryable, Ownable {
     using Address for address;
