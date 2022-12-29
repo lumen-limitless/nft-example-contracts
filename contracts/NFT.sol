@@ -36,7 +36,7 @@ contract NFT is ERC721A, ERC721AQueryable, Ownable {
     constructor() ERC721A("NFT EXAMPLE", "NFT") {}
 
     // =============================================================
-    //                  PUBLIC/EXTERNAL FUNCTIONS
+    //                            FUNCTIONS
     // =============================================================
 
     /// @notice Allows users to buy during public sale
@@ -68,14 +68,10 @@ contract NFT is ERC721A, ERC721AQueryable, Ownable {
     }
 
     // =============================================================
-    //                           OWNER FUNCTIONS
+    //                           RESTRICTED FUNCTIONS
     // =============================================================
-    /// @notice Allows the contract owner to reserve NFTs for team members or promotional purposes
-    /// @dev This should be called before presale or public sales start, as only the first MAX_OWNER_RESERVE tokens can be reserved
-    /// @param to address for the reserved NFTs to be minted to
-    /// @param numberOfTokens number of NFTs to reserve
 
-    /// @notice Set the base URI, must not be revealed
+    /// @notice Set the base URI
     function setBaseURI(string memory baseURI) external onlyOwner {
         _baseUri = baseURI;
         emit BaseUriUpdated(_baseUri);
