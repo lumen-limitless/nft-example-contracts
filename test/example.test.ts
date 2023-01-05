@@ -14,8 +14,8 @@ const setup = deployments.createFixture(async () => {
   }
 })
 
-describe('SETUP', function () {
-  it('Sets up', async function () {
-  expect( await setup()).to.be.ok
+describe('SETUP', () => {
+  it('Sets up', async () => {
+    expect(await setup()).to.be.ok
   })
 })
