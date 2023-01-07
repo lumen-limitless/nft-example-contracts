@@ -14,14 +14,16 @@ export function node_url(networkName: string): string {
   }
 
   if (networkName === 'localhost') {
+    // do not use ETH_NODE_URI
     return 'http://localhost:8545'
   }
 
-  let uri = process.env.ODE_URI
+  let uri = process.env.ETH_NODE_URI
   if (uri) {
     uri = uri.replace('{{networkName}}', networkName)
   }
   if (!uri || uri === '') {
+    // throw new Error(`environment variable "ETH_NODE_URI" not configured `);
     return ''
   }
   if (uri.indexOf('{{') >= 0) {

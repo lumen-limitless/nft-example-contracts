@@ -1,5 +1,7 @@
-import { Contract, providers } from 'ethers'
+import { Contract, providers, Wallet } from 'ethers'
+import { parseUnits } from 'ethers/lib/utils'
 import { ethers, network } from 'hardhat'
+import { setBalance } from '@nomicfoundation/hardhat-network-helpers'
 
 export async function setupUsers<
   T extends { [contractName: string]: Contract }
@@ -35,4 +37,12 @@ export async function advanceTimeAndBlock(
   await advanceTime(time)
   await advanceBlock()
   return Promise.resolve(ethers.provider.getBlock('latest'))
+}
+
+export async function createRandomUser(
+  initialBalance: string
+): Promise<Wallet> {
+  const newUser = ethers.Wallet.createRandom().connect(ethers.provider)
+  await setBalance(newUser.address, parseUnits(initialBalance))
+  return newUser
 }
