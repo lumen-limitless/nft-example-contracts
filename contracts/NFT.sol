@@ -6,7 +6,7 @@ import "erc721a/contracts/extensions/ERC721AQueryable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
 
-contract NFT is ERC721A, ERC721AQueryable, Ownable {
+contract NFT is ERC721A("NFT EXAMPLE", "NFT"), ERC721AQueryable, Ownable {
     using Address for address;
 
     // =============================================================
@@ -21,7 +21,7 @@ contract NFT is ERC721A, ERC721AQueryable, Ownable {
     //                           STATE
     // =============================================================
 
-    uint256 public constant MAX_MINTABLE = 5;
+    uint256 public constant MAX_MINTABLE = 100;
     uint256 public constant MAX_SUPPLY = type(uint).max;
     uint256 public constant MINT_PRICE = 0.0001 ether;
 
@@ -29,11 +29,6 @@ contract NFT is ERC721A, ERC721AQueryable, Ownable {
     mapping(address => uint256) private _mintedCount;
 
     string private _baseUri;
-
-    // =============================================================
-    //                           CONSTRUCTOR
-    // =============================================================
-    constructor() ERC721A("NFT EXAMPLE", "NFT") {}
 
     // =============================================================
     //                            FUNCTIONS
