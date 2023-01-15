@@ -5,7 +5,7 @@ const setup = deployments.createFixture(async () => {
   await deployments.fixture();
   const deployer = await ethers.getNamedSigner('deployer');
   const users = await ethers.getUnnamedSigners();
-  const example = await ethers.getContract('Contract');
+  const example = await ethers.getContract('NFT');
 
   return {
     example,
