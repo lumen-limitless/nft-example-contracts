@@ -1,35 +1,11 @@
-import 'dotenv/config'
-import '@nomicfoundation/hardhat-toolbox'
-import 'hardhat-deploy'
-import { task } from 'hardhat/config'
-import { node_url, accounts, addForkConfiguration } from './utils/network'
-import { HardhatUserConfig } from 'hardhat/types'
-
-task(
-  'blockNumber',
-  'Prints the current block number',
-  async (_, { ethers }) => {
-    await ethers.provider.getBlockNumber().then((blockNumber) => {
-      console.log('Current block number: ' + blockNumber)
-    })
-  }
-)
-
-task('balance', 'Prints an account balance')
-  .addParam('account', 'the account address')
-  .setAction(async (args, { ethers }) => {
-    const account = ethers.utils.getAddress(args.account)
-    const balance = await ethers.provider.getBalance(account)
-
-    console.log(ethers.utils.formatEther(balance), 'ETH')
-  })
-
-task('walletgen', 'Prints a new wallet', async (_, { ethers }) => {
-  const wallet = ethers.Wallet.createRandom()
-  console.log(`Public Address[0]: ${wallet.address}`)
-  console.log(`Mnemonic: ${wallet.mnemonic.phrase}`)
-  console.log(`Private Key[0]: ${wallet.privateKey}`)
-})
+import 'dotenv/config';
+import '@nomicfoundation/hardhat-toolbox';
+import '@nomicfoundation/hardhat-foundry';
+import 'hardhat-deploy';
+import 'hardhat-tracer';
+import 'hardhat-interact';
+import {task} from 'hardhat/config';
+import {HardhatUserConfig, HDAccountsUserConfig, HttpNetworkUserConfig, NetworksUserConfig} from 'hardhat/types';
 
 const config: HardhatUserConfig = {
   solidity: {
@@ -37,7 +13,7 @@ const config: HardhatUserConfig = {
       {
         version: '0.8.17',
         settings: {
-          viaIR: true,
+          viaIR: process.env.IS_COVERAGE ? false : true, //Temporary workaround for https://github.com/sc-forks/solidity-coverage/issues/715
           optimizer: {
             enabled: true,
             runs: 2000,
@@ -62,35 +38,53 @@ const config: HardhatUserConfig = {
     },
     localhost: {
       url: node_url('localhost'),
-      accounts: accounts(),
+      accounts: getAccount(),
     },
     mainnet: {
       url: node_url('mainnet'),
-      accounts: accounts('mainnet'),
-    },
-    arbitrum: {
-      url: node_url('arbitrum'),
-      accounts: accounts('arbitrum'),
-    },
-    optimism: {
-      url: node_url('optimism'),
-      accounts: accounts('optimism'),
+      accounts: getAccount(),
     },
     goerli: {
       url: node_url('goerli'),
-      accounts: accounts('goerli'),
+      accounts: getAccount(),
+    },
+    optimism: {
+      url: node_url('optimism'),
+      accounts: getAccount(),
+    },
+    arbitrum: {
+      url: node_url('arbitrum'),
+      accounts: getAccount(),
+      verify: {
+        etherscan: {
+          apiKey: process.env.ETHERSCAN_API_KEY_ARBITRUM || '',
+          apiUrl: 'https://arbiscan.io/',
+        },
+      },
     },
     polygon: {
       url: node_url('polygon'),
-      accounts: accounts('polygon'),
+      accounts: getAccount(),
+      verify: {
+        etherscan: {
+          apiKey: process.env.ETHERSCAN_API_KEY_POLYGON || '',
+          apiUrl: 'https://polygonscan.com/',
+        },
+      },
     },
     bsc: {
       url: node_url('bsc'),
-      accounts: accounts('bsc'),
+      accounts: getAccount(),
+      verify: {
+        etherscan: {
+          apiKey: process.env.ETHERSCAN_API_KEY_BSC || '',
+          apiUrl: 'https://bscscan.com/',
+        },
+      },
     },
     avalanche: {
       url: node_url('avalanche'),
-      accounts: accounts('avalanche'),
+      accounts: getAccount(),
     },
   }),
 
@@ -110,9 +104,7 @@ const config: HardhatUserConfig = {
     outDir: 'typechain',
     target: 'ethers-v5',
   },
-  mocha: {
-    timeout: 0,
-  },
+
   external: process.env.HARDHAT_FORK
     ? {
         deployments: {
@@ -123,6 +115,91 @@ const config: HardhatUserConfig = {
         },
       }
     : undefined,
+};
+
+export default config;
+
+task('seed', 'Prints a new wallet seed phrase', async (_, {ethers}) => {
+  const wallet = ethers.Wallet.createRandom();
+  console.log(`Public Address[0]: ${wallet.address}`);
+  console.log(`Mnemonic: ${wallet.mnemonic.phrase}`);
+  console.log(`Private Key[0]: ${wallet.privateKey}`);
+});
+
+function getAccount(): string[] | {mnemonic: string} {
+  const privateKey = process.env.PRIVATE_KEY;
+  if (privateKey && privateKey !== '') {
+    return [`${privateKey}`];
+  }
+
+  const mnemonic = process.env.MNEMONIC;
+  if (!mnemonic || mnemonic === '') {
+    return {
+      mnemonic: 'test test test test test test test test test test test junk',
+    };
+  }
+  return {mnemonic: mnemonic};
 }
 
-export default config
+function node_url(networkName: string): string {
+  if (networkName) {
+    const uri = process.env['NODE_URI_' + networkName.toUpperCase()];
+    if (uri && uri !== '') {
+      return uri;
+    }
+  }
+
+  if (networkName === 'localhost') {
+    // do not use ETH_NODE_URI
+    return 'http://localhost:8545';
+  }
+
+  return '';
+}
+
+export function addForkConfiguration(networks: NetworksUserConfig): NetworksUserConfig {
+  // While waiting for hardhat PR: https://github.com/nomiclabs/hardhat/pull/1542
+  if (process.env.HARDHAT_FORK) {
+    process.env['HARDHAT_DEPLOY_FORK'] = process.env.HARDHAT_FORK;
+  }
+
+  const currentNetworkName = process.env.HARDHAT_FORK;
+  let forkURL: string | undefined = currentNetworkName && node_url(currentNetworkName);
+  let hardhatAccounts: HDAccountsUserConfig | undefined;
+  if (currentNetworkName && currentNetworkName !== 'hardhat') {
+    const currentNetwork = networks[currentNetworkName] as HttpNetworkUserConfig;
+    if (currentNetwork) {
+      forkURL = currentNetwork.url;
+      if (
+        currentNetwork.accounts &&
+        typeof currentNetwork.accounts === 'object' &&
+        'mnemonic' in currentNetwork.accounts
+      ) {
+        hardhatAccounts = currentNetwork.accounts;
+      }
+    }
+  }
+
+  const newNetworks = {
+    ...networks,
+    hardhat: {
+      ...networks.hardhat,
+      ...{
+        accounts: hardhatAccounts,
+        forking: forkURL
+          ? {
+              url: forkURL,
+              blockNumber: process.env.HARDHAT_FORK_NUMBER ? parseInt(process.env.HARDHAT_FORK_NUMBER) : undefined,
+            }
+          : undefined,
+        mining: process.env.MINING_INTERVAL
+          ? {
+              auto: false,
+              interval: process.env.MINING_INTERVAL.split(',').map((v) => parseInt(v)) as [number, number],
+            }
+          : undefined,
+      },
+    },
+  };
+  return newNetworks;
+}
