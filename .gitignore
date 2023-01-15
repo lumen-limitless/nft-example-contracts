@@ -1,4 +1,5 @@
 cache/
+cache_forge/
 artifacts/
 
 coverage*
@@ -20,3 +21,4 @@ deployments/hardhat
 deployments/localhost
 
 /.dapp
+/out
